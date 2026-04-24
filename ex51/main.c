@@ -43,6 +43,11 @@ extern void switch_to(struct task_struct* prev, struct task_struct* next);
 
 void schedule() {
     // TODO: Implement this function
+    struct task_struct* current = get_current(); 
+    struct task_struct* next = current -> next;
+    if(next != current)
+        switch_to(current, next);     
+
 }
 
 void idle() {
@@ -80,10 +85,10 @@ struct task_struct* kthread_create(void (*threadfn)()) {
 void start_kernel() {
     uart_puts("\nStarting kernel ...\n");
     /* Initialize the thread pointer */
-    asm volatile("move tp, %0" : : "r"(kthread_create(idle)));
+    /*asm volatile("move tp, %0" : : "r"(kthread_create(idle)));
     for (int i = 0; i < 3; i++)
         kthread_create(foo);
-    idle();
+    idle();*/
 }
 
 void do_trap() {

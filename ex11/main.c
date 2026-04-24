@@ -5,16 +5,26 @@
 #define LSR_DR    (1 << 0)
 #define LSR_TDRQ  (1 << 5)
 
+
 char uart_getc() {
-    // TODO: Implement this function
+    while ((*UART_LSR & LSR_DR) == 0)
+        ;
+    char c = (char)*UART_RBR;
+    return c == '\r' ? '\n' : c;
 }
 
 void uart_putc(char c) {
-    // TODO: Implement this function
+    if (c == '\n')
+        uart_putc('\r');
+
+    while ((*UART_LSR & LSR_TDRQ) == 0)
+        ;
+    *UART_THR = c;
 }
 
 void uart_puts(const char* s) {
-    // TODO: Implement this function
+    while (*s)
+        uart_putc(*s++);
 }
 
 void start_kernel() {
