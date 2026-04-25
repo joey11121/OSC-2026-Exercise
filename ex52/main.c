@@ -6,6 +6,7 @@ extern void video_init();
 extern void video_bmp_display(unsigned int* bmp_image, int width, int height);
 
 #define TIME_FREQ 10000000
+<<<<<<< HEAD
 
 unsigned long get_time(){
     unsigned long now;
@@ -21,6 +22,10 @@ int usleep(unsigned int usec) {
         asm volatile("nop"); 
     }
     return 0;  
+=======
+int usleep(unsigned int usec) {
+    // TODO: Implement this function
+>>>>>>> ac63b0b2257b14c8614426c45c4c7f22f945b564
 }
 
 void display_video() {
@@ -37,6 +42,9 @@ void display_video() {
 void start_kernel() {
     uart_puts("\nStarting kernel ...\n");
     // TODO: Initialize the QEMU frame buffer device
+<<<<<<< HEAD
     video_init(); 
+=======
+>>>>>>> ac63b0b2257b14c8614426c45c4c7f22f945b564
     display_video();
 }

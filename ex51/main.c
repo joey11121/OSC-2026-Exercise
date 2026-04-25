@@ -85,10 +85,17 @@ struct task_struct* kthread_create(void (*threadfn)()) {
 void start_kernel() {
     uart_puts("\nStarting kernel ...\n");
     /* Initialize the thread pointer */
+<<<<<<< HEAD
     asm volatile("move tp, %0" : : "r"(kthread_create(idle)));
     for (int i = 0; i < 3; i++)
         kthread_create(foo);
     idle();
+=======
+    /*asm volatile("move tp, %0" : : "r"(kthread_create(idle)));
+    for (int i = 0; i < 3; i++)
+        kthread_create(foo);
+    idle();*/
+>>>>>>> ac63b0b2257b14c8614426c45c4c7f22f945b564
 }
 
 void do_trap() {

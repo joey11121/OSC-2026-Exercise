@@ -104,7 +104,11 @@ static int fw_cfg_find_file(const char* name) {
             : "memory");                            \
     })
 
+<<<<<<< HEAD
 /*static void flush_dcache(void* addr, unsigned long len) {
+=======
+static void flush_dcache(void* addr, unsigned long len) {
+>>>>>>> ac63b0b2257b14c8614426c45c4c7f22f945b564
     unsigned long start = (unsigned long)addr & ~(CACHE_BLOCK_SIZE - 1);
     __sync_synchronize();
     for (unsigned long line = start; line < (unsigned long)addr + len;
@@ -112,11 +116,14 @@ static int fw_cfg_find_file(const char* name) {
         cbo_flush(line);
         __sync_synchronize();
     }
+<<<<<<< HEAD
 }*/
 
 static void flush_dcache(void* addr, unsigned long len) {
     (void)addr;
     (void)len;
+=======
+>>>>>>> ac63b0b2257b14c8614426c45c4c7f22f945b564
 }
 
 void video_init() {
