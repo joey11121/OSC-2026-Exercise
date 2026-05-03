@@ -36,5 +36,8 @@ uart.o: uart.c
 run: $(BIN)
 	$(QEMU) -M virt -m 512M -kernel $(BIN) -display none -serial stdio
 
+qemu-gdb: $(BIN)
+	$(QEMU) -M virt -m 512M -kernel $(BIN) -display none -serial stdio -S -s
+
 clean:
 	rm -f $(OBJS) $(ELF) $(BIN)
