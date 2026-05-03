@@ -25,6 +25,8 @@ unsigned long boot_cpu_hartid = 0;
 void uart_init() {
     // TODO: Enable RX interrupt
     // TODO: Enable UART interrupt
+    *UART_IER |= ((unsigned char) 1);
+    *UART_IER |= (unsigned char) (1 << 6); 
 }
 
 void irq_enable() {
@@ -36,21 +38,35 @@ void enable_external_interrupt() {
         "li t0, (1 << 9);"
         "csrs sie, t0;");
 }
-
 void plic_init() {
-    // TODO: Implement this function
     // (1) Set UART interrupt priority
+    *(unsigned int*)PLIC_PRIORITY(UART_IRQ) = 1;
     // (2) Set UART interrupt enable for the boot hart
-    // (3) Set threshold for the boot hart
-    // (4) Enable external interrupts
+    *(unsigned int*)PLIC_ENABLE(boot_cpu_hartid) = (1U << UART_IRQ);
+    // (3) Set threshold for the boot hart (allow all priority >= 1)
+    *(unsigned int*)PLIC_THRESHOLD(boot_cpu_hartid) = 0;
+    // (4) Enable Machine External Interrupt (set MEIE bit in mie CSR)
+    //asm volatile("csrs mie, %0" : : "r"(1UL << 11));
+    enable_external_interrupt(); 
+    // (5) Enable global interrupt (set MIE bit in mstatus CSR)
+    //asm volatile("csrs mstatus, %0" : : "r"(1UL << 3));
 }
 
 int plic_claim() {
     // TODO: Implement this function
+    /*Kernel reads the highest-priority IRQ number.
+    PLIC automatically marks the IRQ as "claimed" to prevent duplicate handling.
+    */
+    int irq_num = *(unsigned int*)PLIC_CLAIM(boot_cpu_hartid); 
+    return irq_num; 
 }
 
 void plic_complete(int irq) {
-    // TODO: Implement this function
+    // TODO: Implement this functionThe Kernel writes the processed IRQ number back to the PLIC Claim/Complete register.
+    /*The Gateway unlocks the interrupt source, allowing future interrupts from this device to be forwarded.
+
+    */
+    *(unsigned int*)PLIC_CLAIM(boot_cpu_hartid) = irq; 
 }
 
 void do_trap() {
@@ -71,3 +87,7 @@ void start_kernel() {
     while (1)
         ;
 }
+
+/*some useful resources: 
+1. https://ithelp.ithome.com.tw/m/articles/10270210
+2. https://gitlab.eduxiji.net/pku2400013532/ct/-/blob/main/kernel/plic.c

@@ -10,7 +10,7 @@ clear_bss:
     blt a3, a4, clear_bss
 clear_bss_done:
     la a2, handle_exception
-    csrw stvec, a2
+    csrw stvec, a2 #stvec: trap handler address
     la sp, _end
     tail start_kernel
 
@@ -21,7 +21,7 @@ handle_exception:
      * Retrieve kernel sp from sscratch and
      * save user sp to sscratch
      */
-    csrrw sp, sscratch, sp
+    csrrw sp, sscratch, sp #swap the kernel sp and user sp. 
     bnez sp, save_context
 
     csrr sp, sscratch
@@ -58,11 +58,12 @@ save_context:
     sd t4,  8 * 28(sp)
     sd t5,  8 * 29(sp)
     sd t6,  8 * 30(sp)
-    csrr s0, sscratch
-    csrr s1, sepc
-    csrr s2, sstatus
-    csrr s3, scause
-    csrr s4, stval
+    csrr s0, sscratch # Top of kernel stack or trapframe pointer
+    csrr s1, sepc     # PC where the trap occurred (return address)
+    csrr s2, sstatus  # Processor status (includes SPP: previous mode)
+    csrr s3, scause   # Exception code (e.g., 8 = ecall from U-mode)
+    csrr s4, stval    # Bad address or instruction fault value
+
     sd s0,  8 *  1(sp)
     sd s1,  8 * 31(sp)
     sd s2,  8 * 32(sp)

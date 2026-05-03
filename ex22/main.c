@@ -20,6 +20,7 @@ struct cpio_t {
     char check[8];
 };
 
+
 /**
  * @brief Convert a hexadecimal string to integer
  *
@@ -52,10 +53,61 @@ static int align(int n, int byte) {
 
 void initrd_list(const void* rd) {
     // TODO: Implement this function
+    const char* base = (const char*)rd;
+    int offset = 0; 
+    while(1){
+        struct cpio_t* hdr = (struct cpio_t*)(base + offset); 
+        int namesize = hextoi(hdr -> namesize, sizeof(hdr -> namesize)); 
+        int filesize = hextoi(hdr -> filesize, sizeof(hdr -> filesize)); 
+        offset += sizeof(struct cpio_t);
+        const char* name = base + offset; 
+        if(strcmp(name, "TRAILER!!!") == 0) {
+            break; 
+        } else {
+            printf("%d %s\n", filesize, name); 
+        }
+        offset += namesize;
+        offset = align((int)offset, 4);
+        offset += filesize; 
+        offset = align((int)offset, 4);
+    }
+    
+    return; 
 }
 
 void initrd_cat(const void* rd, const char* filename) {
     // TODO: Implement this function
+    const char* base = (const char*)rd;
+    int offset = 0; 
+    int filefound = 0; 
+    while(1){
+        struct cpio_t* hdr = (struct cpio_t*)(base + offset); 
+        int namesize = hextoi(hdr -> namesize, sizeof(hdr -> namesize)); 
+        int filesize = hextoi(hdr -> filesize, sizeof(hdr -> filesize)); 
+        offset += sizeof(struct cpio_t);
+        const char* name = base + offset; 
+        if(strcmp(name, "TRAILER!!!") == 0) {
+            
+            break; 
+        } else if(strcmp(name, filename) == 0){
+            filefound = 1; 
+        } 
+        offset += namesize;
+        offset = align((int)offset, 4);
+        if(filefound){
+            //printf("Hello\n");
+            for(int i = 0; i < filesize; i++) {
+                printf("%c", *(base + offset + i)); 
+            }
+            break;
+        }
+        offset += filesize; 
+        offset = align((int)offset, 4);
+    }
+    if(!filefound) 
+        printf("intricat: %s: No such file\n", filename);
+     
+    return; 
 }
 
 int main() {
