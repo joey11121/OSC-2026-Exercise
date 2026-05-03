@@ -12,7 +12,7 @@ build: clean
 	$(OBJCOPY) -O binary $(TARGET).elf $(TARGET)
 
 run: build
-	$(QEMU) -M virt -m 512M -kernel $(TARGET) -display none -serial stdio
+	$(QEMU) -M virt -m 256M -kernel $(TARGET) -display none -serial stdio
 
 clean:
 	rm -f $(TARGET) $(TARGET).elf *.o

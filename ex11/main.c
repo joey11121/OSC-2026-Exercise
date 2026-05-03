@@ -5,6 +5,7 @@
 #define LSR_DR    (1 << 0)
 #define LSR_TDRQ  (1 << 5)
 
+
 char uart_getc() {
     // TODO: Implement this function
     //Read and return a single character through the UART

@@ -1,16 +1,13 @@
 .section ".text.boot"
 .global _start
 _start:
-    // TODO: Clear the .bss section
-    // TODO: Set up the stack pointer
+    la a3, __bss_start
+    la a4, __bss_stop
+    ble a4, a3, clear_bss_done
+clear_bss:
+    sd zero, (a3)
+    add a3, a3, 8
+    blt a3, a4, clear_bss
+clear_bss_done:
     la sp, _end
-    la s2, __bss_start
-    la s3, __bss_stop
-    
-loop_start:
-    beq s2, s3, loop_end
-    sb zero, 0(s2)
-    addi s2, s2, 1
-    j loop_start
-loop_end:
     tail start_kernel

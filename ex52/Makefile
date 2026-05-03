@@ -14,5 +14,7 @@ build: clean
 run: build $(TARGET)
 	$(QEMU) -M virt -m 256M -kernel $(TARGET) -serial stdio -device ramfb
 
+
+
 clean:
 	rm -f $(TARGET) $(TARGET).elf *.o

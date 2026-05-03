@@ -91,3 +91,4 @@ void start_kernel() {
 /*some useful resources: 
 1. https://ithelp.ithome.com.tw/m/articles/10270210
 2. https://gitlab.eduxiji.net/pku2400013532/ct/-/blob/main/kernel/plic.c
+*/

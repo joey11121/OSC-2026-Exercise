@@ -14,5 +14,6 @@ build: clean
 run: build $(TARGET)
 	$(QEMU) -M virt -m 256M -kernel $(TARGET) -display none -serial stdio
 
+
 clean:
 	rm -f $(TARGET) $(TARGET).elf *.o
